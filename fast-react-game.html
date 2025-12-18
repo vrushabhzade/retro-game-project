@@ -342,15 +342,28 @@
         }
 
         function render() {
-            // Update stats
-            document.getElementById('level').textContent = gameState.level;
-            document.getElementById('score').textContent = gameState.score;
-            document.getElementById('health').textContent = gameState.player.health;
-            document.getElementById('maxHealth').textContent = gameState.player.maxHealth;
-            document.getElementById('combat').style.display = gameState.isInCombat ? 'inline' : 'none';
+            console.log('Rendering game state...');
+            
+            // Update stats (with null checks)
+            const levelEl = document.getElementById('level');
+            const scoreEl = document.getElementById('score');
+            const healthEl = document.getElementById('health');
+            const maxHealthEl = document.getElementById('maxHealth');
+            const combatEl = document.getElementById('combat');
+            
+            if (levelEl) levelEl.textContent = gameState.level;
+            if (scoreEl) scoreEl.textContent = gameState.score;
+            if (healthEl) healthEl.textContent = gameState.player.health;
+            if (maxHealthEl) maxHealthEl.textContent = gameState.player.maxHealth;
+            if (combatEl) combatEl.style.display = gameState.isInCombat ? 'inline' : 'none';
             
             // Clear grid
             const grid = document.getElementById('gameGrid');
+            if (!grid) {
+                console.error('Game grid element not found!');
+                return;
+            }
+            
             grid.innerHTML = '<div class="grid-bg"></div>';
             grid.style.width = GRID_WIDTH * CELL_SIZE + 'px';
             grid.style.height = GRID_HEIGHT * CELL_SIZE + 'px';
@@ -455,18 +468,49 @@
 
         // Initialize game
         function initGame() {
+            console.log('Initializing game...');
             generateWalls();
             render();
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('game').style.display = 'flex';
+            
+            // Hide loading screen and show game
+            setTimeout(() => {
+                const loading = document.getElementById('loading');
+                const game = document.getElementById('game');
+                
+                if (loading) loading.style.display = 'none';
+                if (game) game.style.display = 'flex';
+                
+                console.log('Game initialized successfully!');
+            }, 500); // Small delay to show loading
         }
 
-        // Fast loading
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initGame);
-        } else {
-            initGame();
+        // Fast loading with multiple fallbacks
+        function startGame() {
+            try {
+                initGame();
+            } catch (error) {
+                console.error('Game initialization error:', error);
+                // Fallback: show game anyway
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game').style.display = 'flex';
+            }
         }
+
+        // Multiple initialization methods
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startGame);
+        } else {
+            startGame();
+        }
+
+        // Backup initialization after 2 seconds
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading && loading.style.display !== 'none') {
+                console.log('Backup initialization triggered');
+                startGame();
+            }
+        }, 2000);
     </script>
 </body>
 </html>

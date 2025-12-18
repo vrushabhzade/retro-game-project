@@ -10,7 +10,7 @@
     "serve": "http-server . -p 8080 -c-1 --cors",
     "start": "npm run build && npm run serve",
     "deploy:netlify": "npm run build:prod && echo 'Ready for Netlify deployment'",
-    "deploy:vercel": "npm run build:prod && vercel --prod",
+    "deploy:vercel": "node optimize-build.js && vercel --prod",
     "deploy:surge": "npm run build:prod && surge . ai-dungeon-master.surge.sh",
     "server:dev": "cd server && npm run dev",
     "server:build": "cd server && npm run build",

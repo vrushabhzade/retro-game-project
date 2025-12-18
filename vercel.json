@@ -1,0 +1,71 @@
+{
+  "version": 2,
+  "name": "ai-dungeon-master",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.json",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/game-menu.html"
+    },
+    {
+      "src": "/game",
+      "dest": "/game-menu.html"
+    },
+    {
+      "src": "/react",
+      "dest": "/react-dungeon-master.html"
+    },
+    {
+      "src": "/simple",
+      "dest": "/simple-game.html"
+    },
+    {
+      "src": "/demo",
+      "dest": "/backend-demo.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}

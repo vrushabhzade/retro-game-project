@@ -1,0 +1,5 @@
+# Netlify redirects for AI Dungeon Master
+/game/* /game-menu.html 200
+/react/* /react-dungeon-master.html 200
+/simple/* /simple-game.html 200
+/api/* https://your-backend-api.com/api/:splat 200

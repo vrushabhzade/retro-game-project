@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - AI Dungeon Master</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            padding: 20px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #00ff00;
+        }
+        .error {
+            color: #ff0000;
+            border-color: #ff0000;
+        }
+        .success {
+            color: #00ff00;
+            border-color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI-Enhanced Dungeon Master - Debug Test</h1>
+    
+    <div id="status-container">
+        <div class="status">Starting debug tests...</div>
+    </div>
+
+    <script>
+        function addStatus(message, isError = false) {
+            const container = document.getElementById('status-container');
+            const div = document.createElement('div');
+            div.className = `status ${isError ? 'error' : 'success'}`;
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            container.appendChild(div);
+            console.log(message);
+        }
+
+        // Test 1: Basic JavaScript
+        try {
+            addStatus('✓ Basic JavaScript working');
+        } catch (e) {
+            addStatus('✗ Basic JavaScript failed: ' + e.message, true);
+        }
+
+        // Test 2: ES6 Modules support
+        try {
+            if (typeof import !== 'undefined') {
+                addStatus('✓ ES6 Modules supported');
+            } else {
+                addStatus('✗ ES6 Modules not supported', true);
+            }
+        } catch (e) {
+            addStatus('✗ ES6 Modules test failed: ' + e.message, true);
+        }
+
+        // Test 3: Try to load the main module
+        addStatus('Attempting to load main game module...');
+        
+        import('./dist/index.js')
+            .then(module => {
+                addStatus('✓ Main module loaded successfully');
+                addStatus('✓ AIDungeonMasterGame class available: ' + (typeof module.AIDungeonMasterGame));
+                
+                // Test 4: Try to create game instance
+                try {
+                    const game = new module.AIDungeonMasterGame();
+                    addStatus('✓ Game instance created successfully');
+                    
+                    // Test 5: Try to start the game
+                    game.start()
+                        .then(() => {
+                            addStatus('✓ Game started successfully!');
+                            addStatus('🎮 Game should be working now. Check the main page.');
+                        })
+                        .catch(error => {
+                            addStatus('✗ Game start failed: ' + error.message, true);
+                            addStatus('Stack trace: ' + error.stack, true);
+                        });
+                        
+                } catch (error) {
+                    addStatus('✗ Game instance creation failed: ' + error.message, true);
+                    addStatus('Stack trace: ' + error.stack, true);
+                }
+            })
+            .catch(error => {
+                addStatus('✗ Main module loading failed: ' + error.message, true);
+                addStatus('Stack trace: ' + error.stack, true);
+                
+                // Additional debugging
+                addStatus('Checking if dist/index.js exists...');
+                fetch('./dist/index.js')
+                    .then(response => {
+                        if (response.ok) {
+                            addStatus('✓ dist/index.js file exists and is accessible');
+                            return response.text();
+                        } else {
+                            addStatus('✗ dist/index.js returned status: ' + response.status, true);
+                        }
+                    })
+                    .then(text => {
+                        if (text) {
+                            addStatus('✓ dist/index.js content length: ' + text.length + ' characters');
+                            if (text.includes('AIDungeonMasterGame')) {
+                                addStatus('✓ AIDungeonMasterGame class found in file');
+                            } else {
+                                addStatus('✗ AIDungeonMasterGame class not found in file', true);
+                            }
+                        }
+                    })
+                    .catch(fetchError => {
+                        addStatus('✗ Failed to fetch dist/index.js: ' + fetchError.message, true);
+                    });
+            });
+
+        // Test 6: Check browser compatibility
+        const features = {
+            'ES6 Classes': typeof class {} === 'function',
+            'ES6 Modules': typeof import !== 'undefined',
+            'Async/Await': (async () => {})().constructor.name === 'AsyncFunction',
+            'Canvas API': typeof HTMLCanvasElement !== 'undefined',
+            'Local Storage': typeof localStorage !== 'undefined',
+            'Fetch API': typeof fetch !== 'undefined'
+        };
+
+        addStatus('Browser compatibility check:');
+        for (const [feature, supported] of Object.entries(features)) {
+            addStatus(`${supported ? '✓' : '✗'} ${feature}: ${supported}`, !supported);
+        }
+
+        // Error handling
+        window.addEventListener('error', (event) => {
+            addStatus('✗ Global error: ' + event.message + ' at ' + event.filename + ':' + event.lineno, true);
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            addStatus('✗ Unhandled promise rejection: ' + event.reason, true);
+        });
+    </script>
+</body>
+</html>
+</text>
+</invoke>

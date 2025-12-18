@@ -1,0 +1,7 @@
+{
+  "environment": "production",
+  "apiUrl": "https://your-backend-api.com",
+  "websocketUrl": "wss://your-backend-api.com",
+  "version": "1.0.0",
+  "buildTime": "2025-12-18T05:14:10.425Z"
+}
